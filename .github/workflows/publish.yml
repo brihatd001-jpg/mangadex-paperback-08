@@ -5,6 +5,7 @@ on:
   workflow_dispatch:
 permissions:
   contents: write
+  issues: write
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -13,21 +14,47 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '18'
-      - run: npm install
-      - run: npm run bundle
-      - name: Inspect generated output
+      - name: Install dependencies
+        run: npm install
+      - name: Compile Paperback sources
         shell: bash
         run: |
-          echo "Repository files:"
-          ls -la
-          echo "Candidate generated files:"
-          find . -maxdepth 4 -type f \( -name 'versioning.json' -o -name '*.pbd' \) -not -path './node_modules/*' -print
-          if [ ! -d ./0.8 ]; then
-            echo "::error::Expected ./0.8 output directory is missing; inspect bundle output and update publish_dir."
+          set -o pipefail
+          npm run bundle 2>&1 | tee build.log
+      - name: Detect Paperback publication directory
+        id: output
+        shell: bash
+        run: |
+          find . -maxdepth 5 -name versioning.json -not -path './node_modules/*' -print | tee manifests.txt
+          manifest="$(head -n 1 manifests.txt)"
+          if [ -z "$manifest" ]; then
+            echo "::error::No versioning.json generated; check Paperback build logs."
             exit 1
           fi
+          echo "directory=$(dirname "$manifest")" >> "$GITHUB_OUTPUT"
       - name: Publish generated files
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./0.8
+          publish_dir: ${{ steps.output.outputs.directory }}
+      - name: File diagnostic issue on failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        shell: bash
+        run: |
+          {
+            echo "Automated build failure report. Run: $RUN_URL"
+            echo
+            echo 'Last build output:'
+            echo '~~~'
+            if [ -f build.log ]; then tail -n 100 build.log; else echo "Build did not reach compilation or log was not created."; fi
+            echo '~~~'
+            echo
+            echo 'Generated manifest paths:'
+            echo '~~~'
+            if [ -f manifests.txt ]; then cat manifests.txt; else echo "Manifest check not reached."; fi
+            echo '~~~'
+          } > /tmp/build-report.md
+          gh issue create --title "Build failure: run ${{ github.run_id }}" --body-file /tmp/build-report.md || true
