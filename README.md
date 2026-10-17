@@ -1,0 +1,1 @@
+# mangadex-paperback-08
