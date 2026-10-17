@@ -11,7 +11,7 @@ const mangaCover = (manga: any): string => {
 export const MangaDexInfo: SourceInfo = {
     version: '0.1.1',
     name: 'MangaDex Personal',
-    icon: 'icon.png',
+    icon: 'icon.svg',
     author: 'Independent',
     description: 'Independent MangaDex API source for Paperback 0.8',
     websiteBaseURL: SITE,
