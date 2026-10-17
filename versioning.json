@@ -1,1 +1,1 @@
-{"buildTime":"2026-10-17T12:42:49.194Z","sources":[],"builtWith":{"toolchain":"0.8.0-alpha.38","types":"0.8.0-alpha.38"}}
+{"buildTime":"2026-10-17T12:50:50.656Z","sources":[{"id":"MangaDex","name":"MangaDex Personal","author":"Independent","desc":"Independent MangaDex API source for Paperback 0.8","contentRating":"MATURE","version":"0.1.1","icon":"icon.svg","websiteBaseURL":"https://mangadex.org","intents":1}],"builtWith":{"toolchain":"0.8.0-alpha.38","types":"0.8.0-alpha.38"}}
