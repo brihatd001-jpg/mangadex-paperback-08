@@ -15,6 +15,17 @@ jobs:
           node-version: '18'
       - run: npm install
       - run: npm run bundle
+      - name: Inspect generated output
+        shell: bash
+        run: |
+          echo "Repository files:"
+          ls -la
+          echo "Candidate generated files:"
+          find . -maxdepth 4 -type f \( -name 'versioning.json' -o -name '*.pbd' \) -not -path './node_modules/*' -print
+          if [ ! -d ./0.8 ]; then
+            echo "::error::Expected ./0.8 output directory is missing; inspect bundle output and update publish_dir."
+            exit 1
+          fi
       - name: Publish generated files
         uses: peaceiris/actions-gh-pages@v4
         with:
