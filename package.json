@@ -1,1 +1,21 @@
-{"name":"mangadex-paperback-08","version":"0.1.0","private":true,"repositoryName":"Personal MangaDex Paperback 0.8","scripts":{"bundle":"paperback bundle","serve":"paperback serve"},"dependencies":{"@paperback/toolchain":"0.8.0-alpha.38","@paperback/types":"0.8.0-alpha.38"},"devDependencies":{"typescript":"^4.3.5"}}
+{
+  "name": "mangadex-paperback-08",
+  "version": "0.1.0",
+  "private": true,
+  "repositoryName": "Personal MangaDex Paperback 0.8",
+  "scripts": {
+    "bundle": "paperback bundle",
+    "serve": "paperback serve"
+  },
+  "dependencies": {
+    "@paperback/toolchain": "0.8.0-alpha.38",
+    "@paperback/types": "0.8.0-alpha.38"
+  },
+  "devDependencies": {
+    "typescript": "4.3.5",
+    "@types/node": "16.11.7"
+  },
+  "overrides": {
+    "@types/node": "16.11.7"
+  }
+}
